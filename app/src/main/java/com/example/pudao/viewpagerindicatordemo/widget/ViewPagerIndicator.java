@@ -136,7 +136,7 @@ public class ViewPagerIndicator extends LinearLayout implements ViewPager.OnPage
     }
 
     /**
-     * 初始化三角形
+     * 初始化三角形, 使用Path绘制
      */
     private void initTriAngle() {
         mPath = new Path();
@@ -151,11 +151,13 @@ public class ViewPagerIndicator extends LinearLayout implements ViewPager.OnPage
      */
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        // 保存画板当前状态
         canvas.save();
         // 平移画板
         canvas.translate(mInitTranslationX + mTranslationX, getHeight() - 10);
         // 绘制三角形
         canvas.drawPath(mPath, mPaint);
+        // 恢复画板状态
         canvas.restore();
         super.dispatchDraw(canvas);
     }
@@ -172,8 +174,10 @@ public class ViewPagerIndicator extends LinearLayout implements ViewPager.OnPage
         // 重新赋值平移量
         mTranslationX = (int) (tabWidth * positionOffset + tabWidth * position);
         // 当tab总数大于visibleTabCount时容器滚动联动
-        if (getChildCount() > visibileTabCount && position >= (visibileTabCount - 2) && position < (getChildCount() - 2)
-                && positionOffset > 0) {
+        if (getChildCount() > visibileTabCount &&
+                position >= (visibileTabCount - 2) && //当前屏幕倒数第二个tab才开始滚动容器
+                position < (getChildCount() - 2) &&   //倒数第二个滚动时不再滚动容器
+                positionOffset > 0) {
             // 滚动容器
             if (position != 1) {
                 this.scrollTo(
@@ -197,21 +201,26 @@ public class ViewPagerIndicator extends LinearLayout implements ViewPager.OnPage
      */
     public int getScreenWidth() {
         WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics outMetrics = new DisplayMetrics();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
         Display defaultDisplay = windowManager.getDefaultDisplay();
-        defaultDisplay.getMetrics(outMetrics);
-        return outMetrics.widthPixels;
+        defaultDisplay.getMetrics(displayMetrics);
+        return displayMetrics.widthPixels;
     }
 
+    /**
+     * 设置tab标题
+     *
+     * @param titles
+     */
     public void setTabItemTitles(List<String> titles) {
         if (titles != null && !titles.isEmpty()) {
+            // 移除当前所有子控件
             this.removeAllViews();
             mTitles = titles;
             for (String title : mTitles) {
                 addView(generateTextView(title));
             }
         }
-
         setItemClickEvent();
     }
 
