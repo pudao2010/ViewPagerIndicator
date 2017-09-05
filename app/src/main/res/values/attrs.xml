@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ViewPagerIndicator">
+        <!--可见tab数量-->
+        <attr name="visibleTabCount" format="integer" />
+        <!--tab默认颜色-->
+        <attr name="defaultColor" format="color" />
+        <!--tab选中颜色-->
+        <attr name="selectedColor" format="color" />
+    </declare-styleable>
+</resources>
